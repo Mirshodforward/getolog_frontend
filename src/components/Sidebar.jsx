@@ -1,4 +1,4 @@
-import { NavLink, useNavigate } from 'react-router-dom'
+import { NavLink } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext'
 import { 
   HiOutlineViewGrid, 
@@ -13,11 +13,9 @@ import {
 
 function Sidebar({ isOpen, onClose }) {
   const { username, logout } = useAuth()
-  const navigate = useNavigate()
 
   const handleLogout = () => {
     logout()
-    navigate('/login')
   }
 
   const menuItems = [
