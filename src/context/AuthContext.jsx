@@ -3,34 +3,33 @@ import { createContext, useContext, useState, useEffect } from 'react'
 const AuthContext = createContext(null)
 
 export function AuthProvider({ children }) {
-  const [token, setToken] = useState(localStorage.getItem('admin_token'))
-  const [username, setUsername] = useState(localStorage.getItem('admin_username'))
-  const [isAuthenticated, setIsAuthenticated] = useState(!!token)
+  const [token, setToken] = useState(null)
+  const [username, setUsername] = useState(null)
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
-    // Verify token on mount
-    if (token) {
-      verifyToken()
-    } else {
-      setLoading(false)
-    }
+    // Auto-login on mount
+    autoLogin()
   }, [])
 
-  const verifyToken = async () => {
+  const autoLogin = async () => {
     try {
-      const res = await fetch('http://localhost:5000/api/auth/verify', {
-        headers: { 'Authorization': `Bearer ${token}` }
+      const res = await fetch('http://localhost:5000/api/auth/login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({})
       })
       const data = await res.json()
       if (data.success) {
-        setIsAuthenticated(true)
-      } else {
-        logout()
+        const newToken = data.data.token
+        const newUsername = data.data.username
+        localStorage.setItem('admin_token', newToken)
+        localStorage.setItem('admin_username', newUsername)
+        setToken(newToken)
+        setUsername(newUsername)
       }
-    } catch {
-      // If backend is down, keep token (don't force logout)
-      setIsAuthenticated(true)
+    } catch (err) {
+      console.log('Auto-login failed:', err)
     } finally {
       setLoading(false)
     }
@@ -41,7 +40,6 @@ export function AuthProvider({ children }) {
     localStorage.setItem('admin_username', newUsername)
     setToken(newToken)
     setUsername(newUsername)
-    setIsAuthenticated(true)
   }
 
   const logout = () => {
@@ -49,11 +47,10 @@ export function AuthProvider({ children }) {
     localStorage.removeItem('admin_username')
     setToken(null)
     setUsername(null)
-    setIsAuthenticated(false)
   }
 
   return (
-    <AuthContext.Provider value={{ token, username, isAuthenticated, loading, login, logout }}>
+    <AuthContext.Provider value={{ token, username, loading, login, logout }}>
       {children}
     </AuthContext.Provider>
   )
