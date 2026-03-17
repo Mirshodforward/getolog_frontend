@@ -107,10 +107,10 @@ function Bots() {
       setActionLoading(bot.id)
       if (isRunning) {
         await stopBot(bot.id)
-        showToast(`"${bot.bot_name}" ga to'xtatish signali yuborildi`, 'warning')
+        showToast(`"${bot.bot_username}" ga to'xtatish signali yuborildi`, 'warning')
       } else {
         await startBot(bot.id)
-        showToast(`"${bot.bot_name}" ga ishga tushirish signali yuborildi`, 'success')
+        showToast(`"${bot.bot_username}" ga ishga tushirish signali yuborildi`, 'success')
       }
       await fetchBotsSilent()
     } catch (error) {
@@ -307,117 +307,178 @@ function Bots() {
         </button>
       </div>
 
-      {/* Active Bots Table */}
+      {/* Active Bots */}
       {activeTab === 'active' && (
-        <div className="table-container overflow-x-auto">
-          <table className="w-full min-w-max">
-            <thead className="table-header">
-              <tr>
-                <th>Bot</th>
-                <th className="hidden sm:table-cell">Egasi</th>
-                <th className="hidden md:table-cell">Kanal</th>
-                <th className="hidden sm:table-cell">Userlar</th>
-                <th>Status</th>
-                <th>Harakatlar</th>
-              </tr>
-            </thead>
-            <tbody>
-              {bots.map((bot) => (
-                <tr key={bot.id} className="table-row">
-                  {/* Bot Info */}
-                  <td className="text-sm sm:text-base">
-                    <div className="flex flex-col gap-0.5">
-                      <span className="font-medium text-slate-800">{bot.bot_name}</span>
-                      {bot.bot_username ? (
-                        <a
-                          href={`https://t.me/${bot.bot_username}`}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="text-xs text-blue-600 hover:underline flex items-center gap-0.5"
-                        >
-                          @{bot.bot_username}
-                          <HiOutlineExternalLink className="w-3 h-3" />
-                        </a>
-                      ) : (
-                        <span className="text-xs text-slate-400">Username yo'q</span>
-                      )}
-                    </div>
-                  </td>
-
-                  {/* Owner */}
-                  <td className="text-slate-600 text-sm hidden sm:table-cell">
-                    @{bot.owner_username || 'N/A'}
-                  </td>
-
-                  {/* Channel */}
-                  <td className="hidden md:table-cell">
-                    <div className="flex flex-col gap-0.5 text-sm">
-                      {bot.channel_username ? (
-                        <a
-                          href={`https://t.me/${bot.channel_username}`}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="text-xs text-blue-600 hover:underline"
-                        >
-                          @{bot.channel_username}
-                        </a>
-                      ) : (
-                        <span className="text-xs text-slate-500">{bot.channel_id || 'N/A'}</span>
-                      )}
-                      {bot.manager_invite_link && (
-                        <a
-                          href={bot.manager_invite_link}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="text-[10px] text-emerald-600 hover:underline"
-                        >
-                          Kirish
-                        </a>
-                      )}
-                    </div>
-                  </td>
-
-                  {/* Users Count */}
-                  <td className="text-sm hidden sm:table-cell">
-                    <div className="flex items-center gap-1 text-slate-600">
-                      <HiOutlineUserGroup className="w-4 h-4 text-slate-400" />
-                      <span className="font-medium">{bot.users_count || 0}</span>
-                    </div>
-                  </td>
-
-                  {/* Status */}
-                  <td className="text-sm">
-                    {renderStatusBadge(bot)}
-                  </td>
-
-                  {/* Actions - Toggle + Delete */}
-                  <td className="text-sm">
-                    <div className="flex items-center gap-1 sm:gap-3">
-                      {renderToggleButton(bot)}
-                      <button
-                        onClick={() => handleDelete(bot.id, bot.bot_name)}
-                        disabled={actionLoading === bot.id || (bot.should_stop && bot.status === 'active')}
-                        className="p-1.5 text-slate-400 hover:text-red-500 hover:bg-red-50 rounded-lg transition-colors disabled:opacity-30"
-                        title="O'chirish"
+        <div className="bg-white rounded-xl shadow-sm ring-1 ring-slate-100 overflow-hidden">
+          {/* Mobile View */}
+          <div className="block sm:hidden divide-y divide-slate-100">
+            {bots.map((bot) => (
+              <div key={bot.id} className="p-4 space-y-3 hover:bg-slate-50 transition-colors">
+                <div className="flex justify-between items-start">
+                  <div className="flex flex-col gap-0.5">
+                    <span className="font-bold text-slate-800">{bot.bot_username || 'N/A'}</span>
+                    {bot.bot_username && (
+                      <a
+                        href={`https://t.me/${bot.bot_username}`}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="text-xs text-blue-600 hover:underline flex items-center gap-0.5"
                       >
-                        <HiOutlineTrash className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
-                      </button>
-                    </div>
-                  </td>
+                        @{bot.bot_username} <HiOutlineExternalLink className="w-3 h-3" />
+                      </a>
+                    )}
+                  </div>
+                  <div>{renderStatusBadge(bot)}</div>
+                </div>
+
+                <div className="grid grid-cols-2 gap-2">
+                   <div className="bg-slate-50 p-2 rounded-lg border border-slate-100">
+                     <span className="text-[10px] text-slate-400 uppercase font-bold tracking-wider">Egasi</span>
+                     <div className="text-sm font-medium text-slate-700 truncate">@{bot.owner_username || 'N/A'}</div>
+                   </div>
+                   <div className="bg-slate-50 p-2 rounded-lg border border-slate-100">
+                     <span className="text-[10px] text-slate-400 uppercase font-bold tracking-wider">Userlar</span>
+                     <div className="flex items-center gap-1 text-sm font-medium text-slate-700">
+                       <HiOutlineUserGroup className="w-4 h-4 text-slate-400" />
+                       {bot.users_count || 0}
+                     </div>
+                   </div>
+                </div>
+
+                <div className="flex items-center justify-between pt-1">
+                  <div className="flex flex-col gap-0.5">
+                    {bot.channel_username && (
+                      <span className="text-[10px] text-slate-500">
+                        Kanal: <a href={`https://t.me/${bot.channel_username}`} className="text-blue-600 underline" target="_blank">@{bot.channel_username}</a>
+                      </span>
+                    )}
+                  </div>
+                  <div className="flex items-center gap-2">
+                    {renderToggleButton(bot)}
+                    <button
+                      onClick={() => handleDelete(bot.id, bot.bot_username)}
+                      disabled={actionLoading === bot.id || (bot.should_stop && bot.status === 'active')}
+                      className="p-2 text-slate-400 hover:text-red-500 hover:bg-red-50 rounded-lg transition-colors disabled:opacity-30 border border-transparent hover:border-red-100"
+                    >
+                      <HiOutlineTrash className="w-4 h-4" />
+                    </button>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+
+          {/* Desktop View */}
+          <div className="hidden sm:block overflow-x-auto table-container">
+            <table className="w-full min-w-max">
+              <thead className="table-header">
+                <tr>
+                  <th>Bot</th>
+                  <th>Egasi</th>
+                  <th>Kanal</th>
+                  <th>Userlar</th>
+                  <th>Status</th>
+                  <th>Harakatlar</th>
                 </tr>
-              ))}
-            </tbody>
-          </table>
+              </thead>
+              <tbody>
+                {bots.map((bot) => (
+                  <tr key={bot.id} className="table-row">
+                    {/* Bot Info */}
+                    <td>
+                      <div className="flex flex-col gap-0.5">
+                        <span className="font-medium text-slate-800">{bot.bot_username}</span>
+                        {bot.bot_username ? (
+                          <a
+                            href={`https://t.me/${bot.bot_username}`}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="text-xs text-blue-600 hover:underline flex items-center gap-0.5"
+                          >
+                            @{bot.bot_username}
+                            <HiOutlineExternalLink className="w-3 h-3" />
+                          </a>
+                        ) : (
+                          <span className="text-xs text-slate-400">Username yo'q</span>
+                        )}
+                      </div>
+                    </td>
+
+                    {/* Owner */}
+                    <td className="text-slate-600 text-sm">
+                      @{bot.owner_username || 'N/A'}
+                    </td>
+
+                    {/* Channel */}
+                    <td>
+                      <div className="flex flex-col gap-0.5 text-sm">
+                        {bot.channel_username ? (
+                          <a
+                            href={`https://t.me/${bot.channel_username}`}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="text-xs text-blue-600 hover:underline"
+                          >
+                            @{bot.channel_username}
+                          </a>
+                        ) : (
+                          <span className="text-xs text-slate-500">{bot.channel_id || 'N/A'}</span>
+                        )}
+                        {bot.manager_invite_link && (
+                          <a
+                            href={bot.manager_invite_link}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="text-[10px] text-emerald-600 hover:underline"
+                          >
+                            Kirish
+                          </a>
+                        )}
+                      </div>
+                    </td>
+
+                    {/* Users Count */}
+                    <td className="text-sm">
+                      <div className="flex items-center gap-1 text-slate-600">
+                        <HiOutlineUserGroup className="w-4 h-4 text-slate-400" />
+                        <span className="font-medium">{bot.users_count || 0}</span>
+                      </div>
+                    </td>
+
+                    {/* Status */}
+                    <td className="text-sm">
+                      {renderStatusBadge(bot)}
+                    </td>
+
+                    {/* Actions - Toggle + Delete */}
+                    <td className="text-sm">
+                      <div className="flex items-center gap-2">
+                        {renderToggleButton(bot)}
+                        <button
+                          onClick={() => handleDelete(bot.id, bot.bot_username)}
+                          disabled={actionLoading === bot.id || (bot.should_stop && bot.status === 'active')}
+                          className="p-1.5 text-slate-400 hover:text-red-500 hover:bg-red-50 rounded-lg transition-colors disabled:opacity-30"
+                          title="O'chirish"
+                        >
+                          <HiOutlineTrash className="w-4 h-4" />
+                        </button>
+                      </div>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
 
           {bots.length === 0 && (
-            <div className="text-center py-8 text-slate-500">
+            <div className="text-center py-8 text-slate-500 border-t border-slate-100">
               <HiOutlineCube className="w-12 h-12 mx-auto text-slate-300 mb-2" />
               Botlar topilmadi
             </div>
           )}
 
           {pagination && pagination.totalPages > 1 && (
-            <div className="px-4 py-3 border-t border-slate-100 flex justify-between items-center">
+            <div className="px-4 py-3 border-t border-slate-100 flex justify-between items-center bg-slate-50">
               <span className="text-sm text-slate-500">
                 Sahifa {pagination.page} / {pagination.totalPages} (Jami: {pagination.total})
               </span>
@@ -444,78 +505,109 @@ function Bots() {
 
       {/* Deleted Bots Table */}
       {activeTab === 'deleted' && (
-        <div className="table-container">
-          <table className="w-full">
-            <thead className="table-header">
-              <tr>
-                <th>Bot</th>
-                <th>Egasi</th>
-                <th>Userlar</th>
-                <th>Narxlar</th>
-                <th>Yaratilgan</th>
-                <th>O'chirilgan</th>
-                <th>Sabab</th>
-              </tr>
-            </thead>
-            <tbody>
-              {deletedBots.map((bot) => (
-                <tr key={bot.id} className="table-row bg-red-50/30">
-                  {/* Bot Info */}
-                  <td>
+        <div className="bg-white rounded-xl shadow-sm ring-1 ring-slate-100 overflow-hidden">
+          {/* Mobile View */}
+          <div className="block sm:hidden divide-y divide-slate-100">
+             {deletedBots.map((bot) => (
+                <div key={bot.id} className="p-4 space-y-3 bg-red-50/20">
+                  <div className="flex justify-between items-start">
                     <div className="flex flex-col">
-                      <span className="font-medium text-slate-800">{bot.bot_name}</span>
-                      <span className="text-xs text-slate-400">@{bot.bot_username || 'N/A'}</span>
-                      <span className="text-[10px] text-slate-400">ID: {bot.original_bot_id}</span>
+                      <span className="font-bold text-slate-800">{bot.bot_username || 'N/A'}</span>
+                      <span className="text-[11px] text-slate-500 font-mono mt-0.5">ID: {bot.original_bot_id}</span>
                     </div>
-                  </td>
-
-                  {/* Owner */}
-                  <td className="text-slate-600">
-                    @{bot.owner_username || 'N/A'}
-                  </td>
-
-                  {/* Users Count */}
-                  <td>
-                    <span className="font-medium text-slate-600">{bot.registered_users_count || 0}</span>
-                  </td>
-
-                  {/* Prices */}
-                  <td>
-                    <div className="flex flex-col text-[10px] text-slate-500">
-                      <span>Oylik: {bot.oy_narx?.toLocaleString() || 0}</span>
-                      <span>Yillik: {bot.yil_narx?.toLocaleString() || 0}</span>
-                      <span>Cheksiz: {bot.cheksiz_narx?.toLocaleString() || 0}</span>
+                    <span className="px-2 py-0.5 rounded-full text-[10px] font-bold tracking-wide uppercase bg-red-100 text-red-700 border border-red-200">
+                      O'chirilgan
+                    </span>
+                  </div>
+                  
+                  <div className="grid grid-cols-2 gap-2 text-sm bg-white p-2.5 rounded-lg border border-red-100">
+                    <div>
+                      <span className="text-[10px] text-slate-400 uppercase font-bold block mb-0.5">Egasi:</span>
+                      <span className="font-medium text-slate-700 truncate">@{bot.owner_username || 'N/A'}</span>
                     </div>
-                  </td>
+                    <div className="text-right">
+                      <span className="text-[10px] text-slate-400 uppercase font-bold block mb-0.5">Sana:</span>
+                      <span className="text-xs font-semibold text-red-600">{formatDate(bot.deleted_at)}</span>
+                    </div>
+                  </div>
+                </div>
+             ))}
+          </div>
 
-                  {/* Created At */}
-                  <td className="text-xs text-slate-500">
-                    {formatDate(bot.bot_created_at)}
-                  </td>
-
-                  {/* Deleted At */}
-                  <td className="text-xs text-red-600 font-medium">
-                    {formatDate(bot.deleted_at)}
-                  </td>
-
-                  {/* Deletion Reason */}
-                  <td className="text-xs text-slate-500 max-w-[120px] truncate" title={bot.deletion_reason}>
-                    {bot.deletion_reason || '-'}
-                  </td>
+          {/* Desktop View */}
+          <div className="hidden sm:block overflow-x-auto table-container">
+            <table className="w-full">
+              <thead className="table-header">
+                <tr>
+                  <th>Bot</th>
+                  <th>Egasi</th>
+                  <th>Userlar</th>
+                  <th>Narxlar</th>
+                  <th>Yaratilgan</th>
+                  <th>O'chirilgan</th>
+                  <th>Sabab</th>
                 </tr>
-              ))}
-            </tbody>
-          </table>
+              </thead>
+              <tbody>
+                {deletedBots.map((bot) => (
+                  <tr key={bot.id} className="table-row bg-red-50/20">
+                    {/* Bot Info */}
+                    <td>
+                      <div className="flex flex-col">
+                        <span className="font-medium text-slate-800">{bot.bot_username}</span>
+                        <span className="text-xs text-slate-400">@{bot.bot_username || 'N/A'}</span>
+                        <span className="text-[10px] text-slate-400">ID: {bot.original_bot_id}</span>
+                      </div>
+                    </td>
+
+                    {/* Owner */}
+                    <td className="text-slate-600 text-sm">
+                      @{bot.owner_username || 'N/A'}
+                    </td>
+
+                    {/* Users Count */}
+                    <td>
+                      <span className="font-medium text-slate-600 text-sm">{bot.registered_users_count || 0}</span>
+                    </td>
+
+                    {/* Prices */}
+                    <td>
+                      <div className="flex flex-col text-[10px] text-slate-500">
+                        <span>Oylik: {bot.oy_narx?.toLocaleString() || 0}</span>
+                        <span>Yillik: {bot.yil_narx?.toLocaleString() || 0}</span>
+                        <span>Cheksiz: {bot.cheksiz_narx?.toLocaleString() || 0}</span>
+                      </div>
+                    </td>
+
+                    {/* Created At */}
+                    <td className="text-xs text-slate-500">
+                      {formatDate(bot.bot_created_at)}
+                    </td>
+
+                    {/* Deleted At */}
+                    <td className="text-xs text-red-600 font-medium">
+                      {formatDate(bot.deleted_at)}
+                    </td>
+
+                    {/* Deletion Reason */}
+                    <td className="text-xs text-slate-500 max-w-[120px] truncate" title={bot.deletion_reason}>
+                      {bot.deletion_reason || '-'}
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
 
           {deletedBots.length === 0 && (
-            <div className="text-center py-8 text-slate-500">
+            <div className="text-center py-8 text-slate-500 border-t border-slate-100">
               <HiOutlineTrash className="w-12 h-12 mx-auto text-slate-300 mb-2" />
               O'chirilgan botlar topilmadi
             </div>
           )}
 
           {deletedPagination && deletedPagination.totalPages > 1 && (
-            <div className="px-4 py-3 border-t border-slate-100 flex justify-between items-center">
+            <div className="px-4 py-3 border-t border-slate-100 flex justify-between items-center bg-slate-50">
               <span className="text-sm text-slate-500">
                 Sahifa {deletedPagination.page} / {deletedPagination.totalPages} (Jami: {deletedPagination.total})
               </span>

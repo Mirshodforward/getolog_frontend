@@ -153,62 +153,103 @@ function Transactions() {
         </div>
       ) : (
         <>
-          {/* Table */}
-          <div className="table-container">
-            <table className="w-full">
-              <thead className="table-header">
-                <tr>
-                  <th>ID</th>
-                  <th>Foydalanuvchi</th>
-                  <th>Summa</th>
-                  <th>Status</th>
-                  <th>Sana</th>
-                </tr>
-              </thead>
-              <tbody>
-                {transactions.map((trans) => (
-                  <tr key={trans.id} className="table-row">
-                    <td>
-                      <span className="inline-flex items-center justify-center w-8 h-8 rounded-lg bg-slate-100 text-slate-600 font-medium text-xs">
-                        #{trans.id}
-                      </span>
-                    </td>
-                    <td>
-                      <div className="flex items-center gap-2">
-                        <div className={`w-8 h-8 rounded-full flex items-center justify-center text-white text-xs font-semibold ${
-                          activeTab === 'client' ? 'bg-blue-500' : 'bg-purple-500'
-                        }`}>
-                          {(trans.username || 'N')[0].toUpperCase()}
-                        </div>
-                        <div>
-                          <p className="font-medium text-slate-800 text-sm">@{trans.username || 'N/A'}</p>
-                          <p className="text-xs text-slate-400">ID: {trans.user_id}</p>
-                        </div>
+          {/* Table & Cards */}
+          <div className="bg-white rounded-xl shadow-sm ring-1 ring-slate-100 overflow-hidden">
+            {/* Mobile View */}
+            <div className="block sm:hidden divide-y divide-slate-100">
+              {transactions.map((trans) => (
+                <div key={trans.id} className="p-4 space-y-3 hover:bg-slate-50 transition-colors">
+                  <div className="flex justify-between items-start">
+                    <div className="flex items-center gap-2.5">
+                      <div className={`w-8 h-8 rounded-full flex items-center justify-center text-white text-xs font-semibold shrink-0 ${
+                        activeTab === 'client' ? 'bg-blue-500' : 'bg-purple-500'
+                      }`}>
+                        {(trans.username || 'N')[0].toUpperCase()}
                       </div>
-                    </td>
-                    <td>
-                      <span className="font-bold text-emerald-600 flex items-center gap-1">
-                        <HiOutlineCash className="w-4 h-4" />
-                        {trans.amount?.toLocaleString()}
-                        <span className="text-xs text-slate-400 font-normal">so'm</span>
+                      <div>
+                        <p className="font-bold text-slate-800 text-sm">@{trans.username || 'N/A'}</p>
+                        <p className="text-[11px] text-slate-500 font-mono mt-0.5">ID: {trans.user_id}</p>
+                      </div>
+                    </div>
+                    {getStatusBadge(trans.status)}
+                  </div>
+                  
+                  <div className="flex justify-between items-center bg-slate-50 p-2.5 rounded-lg border border-slate-100 mt-2">
+                    <div>
+                      <div className="text-[10px] text-slate-400 uppercase font-bold tracking-wider mb-0.5">Summa</div>
+                      <span className="font-bold text-emerald-600 text-[15px] flex items-center gap-1">
+                        {trans.amount?.toLocaleString()} so'm
                       </span>
-                    </td>
-                    <td>
-                      {getStatusBadge(trans.status)}
-                    </td>
-                    <td>
-                      <div className="flex items-center gap-1.5 text-sm text-slate-500">
-                        <HiOutlineCalendar className="w-4 h-4 text-slate-400" />
+                    </div>
+                    <div className="text-right">
+                      <div className="text-[10px] text-slate-400 uppercase font-bold tracking-wider mb-0.5">Sana</div>
+                      <div className="flex items-center gap-1 text-xs text-slate-600 font-medium">
+                        <HiOutlineCalendar className="w-3.5 h-3.5 text-slate-400" />
                         {formatDate(trans.created_at)}
                       </div>
-                    </td>
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+
+            {/* Desktop View */}
+            <div className="hidden sm:block overflow-x-auto table-container">
+              <table className="w-full">
+                <thead className="table-header">
+                  <tr>
+                    <th>ID</th>
+                    <th>Foydalanuvchi</th>
+                    <th>Summa</th>
+                    <th>Status</th>
+                    <th>Sana</th>
                   </tr>
-                ))}
-              </tbody>
-            </table>
+                </thead>
+                <tbody>
+                  {transactions.map((trans) => (
+                    <tr key={trans.id} className="table-row">
+                      <td>
+                        <span className="inline-flex items-center justify-center w-8 h-8 rounded-lg bg-slate-100 text-slate-600 font-medium text-xs">
+                          #{trans.id}
+                        </span>
+                      </td>
+                      <td>
+                        <div className="flex items-center gap-2">
+                          <div className={`w-8 h-8 rounded-full flex items-center justify-center text-white text-xs font-semibold ${
+                            activeTab === 'client' ? 'bg-blue-500' : 'bg-purple-500'
+                          }`}>
+                            {(trans.username || 'N')[0].toUpperCase()}
+                          </div>
+                          <div>
+                            <p className="font-medium text-slate-800 text-sm">@{trans.username || 'N/A'}</p>
+                            <p className="text-xs text-slate-400">ID: {trans.user_id}</p>
+                          </div>
+                        </div>
+                      </td>
+                      <td>
+                        <span className="font-bold text-emerald-600 flex items-center gap-1">
+                          <HiOutlineCash className="w-4 h-4" />
+                          {trans.amount?.toLocaleString()}
+                          <span className="text-xs text-slate-400 font-normal">so'm</span>
+                        </span>
+                      </td>
+                      <td>
+                        {getStatusBadge(trans.status)}
+                      </td>
+                      <td>
+                        <div className="flex items-center gap-1.5 text-sm text-slate-500">
+                          <HiOutlineCalendar className="w-4 h-4 text-slate-400" />
+                          {formatDate(trans.created_at)}
+                        </div>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
 
             {transactions.length === 0 && (
-              <div className="text-center py-8 text-slate-500">
+              <div className="text-center py-8 text-slate-500 border-t border-slate-100">
                 <HiOutlineCreditCard className="w-12 h-12 mx-auto text-slate-300 mb-2" />
                 Tranzaksiyalar topilmadi
               </div>

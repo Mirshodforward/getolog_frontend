@@ -278,10 +278,54 @@ function Users() {
         </div>
       )}
 
-      {/* Table */}
-      <div className="table-container overflow-x-auto">
-        <table className="w-full min-w-max">
-          <thead className="table-header">
+      {/* Table & Cards */}
+      <div className="bg-white rounded-xl shadow-sm ring-1 ring-slate-100 overflow-hidden">
+        {/* Mobile View */}
+        <div className="block sm:hidden divide-y divide-slate-100">
+          {users.map((user) => (
+            <div key={`${user.user_id}-${user.id}`} className="p-4 space-y-3 hover:bg-slate-50 transition-colors">
+              <div className="flex justify-between items-start">
+                <div>
+                  <div className="font-bold text-slate-800 text-base">{user.name || (user.username ? `@${user.username}` : 'N/A')}</div>
+                  <div className="font-mono text-slate-500 text-[11px] mt-1 tracking-tight">ID: {user.user_id}</div>
+                  {user.name && user.username && (
+                     <div className="text-slate-500 text-xs mt-1">@{user.username}</div>
+                  )}
+                </div>
+                <span className={`px-2 py-0.5 rounded-full text-[10px] font-bold tracking-wide uppercase flex items-center gap-1 ${
+                  user.status === 'active' ? 'bg-emerald-100 text-emerald-700' :
+                  user.status === 'removed' ? 'bg-red-100 text-red-700' : 'bg-slate-100 text-slate-600'
+                }`}>
+                  {user.status === 'active' && <HiOutlineCheckCircle className="w-3 h-3" />}
+                  {user.status === 'removed' && <HiOutlineXCircle className="w-3 h-3" />}
+                  {user.status === 'active' ? 'Faol' :
+                   user.status === 'removed' ? 'Chiqarilgan' :
+                   user.status === 'free' ? 'Free' : user.status}
+                </span>
+              </div>
+              
+              <div className="flex justify-between items-center bg-slate-100/50 p-2.5 rounded-lg border border-slate-100">
+                <div>
+                  <div className="text-[10px] text-slate-400 uppercase font-bold tracking-wider mb-0.5">Balans</div>
+                  <div className={`font-bold text-[15px] ${user.balance > 0 ? 'text-emerald-600' : 'text-slate-600'}`}>
+                    {user.balance?.toLocaleString()} so'm
+                  </div>
+                </div>
+                <div className="text-right">
+                  <div className="text-[10px] text-slate-400 uppercase font-bold tracking-wider mb-0.5">Egasi</div>
+                  <div className="font-medium text-purple-600 text-sm">
+                    {user.bot_owner_username ? `@${user.bot_owner_username}` : '—'}
+                  </div>
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
+
+        {/* Desktop View */}
+        <div className="hidden sm:block overflow-x-auto table-container">
+          <table className="w-full min-w-max">
+            <thead className="table-header">
             <tr>
               <th className="text-xs sm:text-sm">User ID</th>
               <th
@@ -360,9 +404,10 @@ function Users() {
             ))}
           </tbody>
         </table>
+        </div>
 
         {users.length === 0 && !searchLoading && (
-          <div className="text-center py-8 text-slate-500">
+          <div className="text-center py-8 text-slate-500 border-t border-slate-100">
             <HiOutlineUserCircle className="w-12 h-12 mx-auto text-slate-300 mb-2" />
             {search || ownerSearch || statusFilter
               ? 'Qidiruv bo\'yicha userlar topilmadi'
@@ -371,7 +416,7 @@ function Users() {
         )}
 
         {pagination && pagination.totalPages > 1 && (
-          <div className="px-4 py-3 border-t border-slate-100 flex justify-between items-center">
+          <div className="px-4 py-3 border-t border-slate-100 flex justify-between items-center bg-slate-50">
             <span className="text-sm text-slate-500">
               Sahifa {pagination.page} / {pagination.totalPages}
               <span className="text-slate-400 ml-2">• {pagination.total} ta user</span>

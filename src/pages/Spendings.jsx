@@ -191,79 +191,133 @@ function Spendings() {
         </div>
       ) : (
         <>
-          {/* Table */}
-          <div className="table-container">
-            <table className="w-full">
-              <thead className="table-header">
-                <tr>
-                  <th>#</th>
-                  <th>Foydalanuvchi</th>
-                  <th>Summa</th>
-                  <th>Sarf turi</th>
-                  {activeTab === 'user' && <th>Bot nomi</th>}
-                  {activeTab === 'user' && <th>Bot egasi (Admin)</th>}
-                  <th>Sana</th>
-                </tr>
-              </thead>
-              <tbody>
-                {spendings.map((spend, idx) => (
-                  <tr 
-                    key={spend.id} 
-                    className="table-row cursor-pointer hover:bg-slate-50"
-                    onClick={() => setExpandedRow(expandedRow === spend.id ? null : spend.id)}
-                  >
-                    <td>
-                      <span className="text-xs text-slate-400 font-mono">
-                        {(page - 1) * 25 + idx + 1}
-                      </span>
-                    </td>
-                    <td>
-                      <div className="flex items-center gap-2">
-                        <div className={`w-7 h-7 rounded-full flex items-center justify-center text-white text-xs font-semibold ${
-                          activeTab === 'client' ? 'bg-purple-500' : 'bg-orange-500'
-                        }`}>
-                          {(spend.username || 'N')[0].toUpperCase()}
-                        </div>
-                        <div>
-                          <p className="font-medium text-slate-800 text-sm">@{spend.username || 'N/A'}</p>
-                          <p className="text-xs text-slate-400">{spend.user_id}</p>
+          {/* Table & Cards */}
+          <div className="bg-white rounded-xl shadow-sm ring-1 ring-slate-100 overflow-hidden">
+            {/* Mobile View */}
+            <div className="block sm:hidden divide-y divide-slate-100">
+              {spendings.map((spend, idx) => (
+                <div 
+                  key={spend.id} 
+                  className="p-4 space-y-3 hover:bg-slate-50 transition-colors"
+                  onClick={() => setExpandedRow(expandedRow === spend.id ? null : spend.id)}
+                >
+                  <div className="flex justify-between items-start">
+                    <div className="flex flex-col gap-1">
+                      <div className="font-bold text-slate-800 text-sm">@{spend.username || 'N/A'}</div>
+                      <div className="text-[11px] text-slate-500 font-mono">ID: {spend.user_id}</div>
+                    </div>
+                    {getSpendBadge(spend.spend)}
+                  </div>
+                  
+                  {activeTab === 'user' && (
+                    <div className="grid grid-cols-2 gap-2 mt-1">
+                      <div className="bg-slate-50 p-2 rounded flex flex-col gap-0.5">
+                        <span className="text-[10px] text-slate-400 uppercase font-bold">Bot</span>
+                        <div className="flex items-center gap-1">
+                          <HiOutlineCube className="w-3 h-3 text-slate-400" />
+                          <span className="text-xs text-slate-700 font-medium truncate">{spend.bot_username || '—'}</span>
                         </div>
                       </div>
-                    </td>
-                    <td>
+                      <div className="bg-slate-50 p-2 rounded flex flex-col gap-0.5">
+                        <span className="text-[10px] text-slate-400 uppercase font-bold">Admin</span>
+                        <span className="text-xs text-slate-500 truncate">{spend.admin_id || '—'}</span>
+                      </div>
+                    </div>
+                  )}
+
+                  <div className="flex justify-between items-center bg-slate-50 p-2.5 rounded-lg border border-slate-100 mt-2">
+                    <div>
+                      <div className="text-[10px] text-slate-400 uppercase font-bold tracking-wider mb-0.5">Summa</div>
                       <span className="font-bold text-emerald-600 text-sm">
                         {formatMoney(spend.amount)}
                       </span>
-                    </td>
-                    <td>
-                      {getSpendBadge(spend.spend)}
-                    </td>
-                    {activeTab === 'user' && (
-                      <td>
-                        <div className="flex items-center gap-1.5">
-                          <HiOutlineCube className="w-3.5 h-3.5 text-slate-400" />
-                          <span className="text-sm text-slate-700 font-medium">{spend.bot_name || '—'}</span>
-                        </div>
-                      </td>
-                    )}
-                    {activeTab === 'user' && (
-                      <td>
-                        <span className="text-sm text-slate-500">{spend.admin_id || '—'}</span>
-                      </td>
-                    )}
-                    <td>
-                      <div className="flex items-center gap-1 text-xs text-slate-500">
-                        <HiOutlineCalendar className="w-3.5 h-3.5 text-slate-400" />
+                    </div>
+                    <div className="text-right">
+                      <div className="text-[10px] text-slate-400 uppercase font-bold tracking-wider mb-0.5">Sana</div>
+                      <div className="flex items-center justify-end gap-1 text-xs text-slate-500 font-medium">
+                        <HiOutlineCalendar className="w-3.5 h-3.5" />
                         {formatDate(spend.created_at)}
                       </div>
-                    </td>
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+
+            {/* Desktop View */}
+            <div className="hidden sm:block overflow-x-auto table-container">
+              <table className="w-full min-w-max">
+                <thead className="table-header">
+                  <tr>
+                    <th>#</th>
+                    <th>Foydalanuvchi</th>
+                    <th>Summa</th>
+                    <th>Sarf turi</th>
+                    {activeTab === 'user' && <th>Bot nomi</th>}
+                    {activeTab === 'user' && <th>Bot egasi (Admin)</th>}
+                    <th>Sana</th>
                   </tr>
-                ))}
-              </tbody>
-            </table>
+                </thead>
+                <tbody>
+                  {spendings.map((spend, idx) => (
+                    <tr 
+                      key={spend.id} 
+                      className="table-row cursor-pointer hover:bg-slate-50"
+                      onClick={() => setExpandedRow(expandedRow === spend.id ? null : spend.id)}
+                    >
+                      <td>
+                        <span className="text-xs text-slate-400 font-mono">
+                          {(page - 1) * 25 + idx + 1}
+                        </span>
+                      </td>
+                      <td>
+                        <div className="flex items-center gap-2">
+                          <div className={`w-7 h-7 rounded-full flex items-center justify-center text-white text-xs font-semibold ${
+                            activeTab === 'client' ? 'bg-purple-500' : 'bg-orange-500'
+                          }`}>
+                            {(spend.username || 'N')[0].toUpperCase()}
+                          </div>
+                          <div>
+                            <p className="font-medium text-slate-800 text-sm">@{spend.username || 'N/A'}</p>
+                            <p className="text-xs text-slate-400">{spend.user_id}</p>
+                          </div>
+                        </div>
+                      </td>
+                      <td>
+                        <span className="font-bold text-emerald-600 text-sm">
+                          {formatMoney(spend.amount)}
+                        </span>
+                      </td>
+                      <td>
+                        {getSpendBadge(spend.spend)}
+                      </td>
+                      {activeTab === 'user' && (
+                        <td>
+                          <div className="flex items-center gap-1.5">
+                            <HiOutlineCube className="w-3.5 h-3.5 text-slate-400" />
+                            <span className="text-sm text-slate-700 font-medium">{spend.bot_username || '—'}</span>
+                          </div>
+                        </td>
+                      )}
+                      {activeTab === 'user' && (
+                        <td>
+                          <span className="text-sm text-slate-500">{spend.admin_id || '—'}</span>
+                        </td>
+                      )}
+                      <td>
+                        <div className="flex items-center gap-1 text-xs text-slate-500">
+                          <HiOutlineCalendar className="w-3.5 h-3.5 text-slate-400" />
+                          {formatDate(spend.created_at)}
+                        </div>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
 
             {spendings.length === 0 && (
-              <div className="text-center py-8 text-slate-500">
+              <div className="text-center py-8 text-slate-500 border-t border-slate-100">
                 <HiOutlineTrendingDown className="w-12 h-12 mx-auto text-slate-300 mb-2" />
                 Sarflar topilmadi
               </div>
@@ -271,7 +325,7 @@ function Spendings() {
 
             {/* Pagination */}
             {pagination && pagination.totalPages > 1 && (
-              <div className="px-4 py-3 border-t border-slate-100 flex justify-between items-center">
+              <div className="px-4 py-3 border-t border-slate-100 flex justify-between items-center bg-slate-50">
                 <span className="text-sm text-slate-500">
                   Sahifa {pagination.page} / {pagination.totalPages} ({pagination.total} ta)
                 </span>
