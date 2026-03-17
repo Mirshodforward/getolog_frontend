@@ -231,13 +231,17 @@ function Dashboard() {
               <span className="mini-stat-value text-purple-600">{data?.clients?.withBots || 0}</span>
             </div>
             <div className="mini-stat pl-3">
-              <span className="text-xs text-slate-500">Free</span>
-              <span className="text-sm text-slate-600">{data?.clients?.freeBots || 0}</span>
-            </div>
-            <div className="mini-stat pl-3">
-              <span className="text-xs text-slate-500">Premium</span>
-              <span className="text-sm text-emerald-600 font-medium">{data?.clients?.premiumBots || 0}</span>
-            </div>
+                <span className="text-xs text-slate-500">Free</span>
+                <span className="text-sm text-slate-600">{data?.clients?.freeClients || 0}</span>
+              </div>
+              <div className="mini-stat pl-3">
+                <span className="text-xs text-blue-500">Standart</span>
+                <span className="text-sm text-blue-600 font-medium">{data?.clients?.standartClients || 0}</span>
+              </div>
+              <div className="mini-stat pl-3">
+                <span className="text-xs text-emerald-500">Biznes</span>
+                <span className="text-sm text-emerald-600 font-medium">{data?.clients?.biznesClients || 0}</span>
+              </div>
             <div className="mt-2 pt-2 border-t border-slate-100">
               <div className="flex items-center justify-between bg-blue-50 px-2.5 py-1.5 rounded-lg">
                 <span className="text-xs font-medium text-blue-700 flex items-center gap-1">
@@ -314,30 +318,45 @@ function Dashboard() {
       {/* Second Row - 3 columns on desktop, 1 on mobile */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
         
-        {/* Premium Purchases */}
-        <div className="card-compact">
-          <div className="section-title mb-3">
-            <HiOutlineStar className="w-4 h-4 text-orange-600" />
-            Premium sotib olishlar
+        {/* Tarif Purchases */}
+          <div className="card-compact">
+            <div className="section-title mb-3">
+              <HiOutlineStar className="w-4 h-4 text-orange-600" />
+              Tarif sotib olishlar
+            </div>
+
+            <div className="space-y-2">
+              <div className="bg-gradient-to-r from-orange-400 to-amber-500 px-3 py-2 rounded-lg text-white flex justify-between items-center">
+                <span className="text-xs">Jami tariflar</span>
+                <span className="font-bold text-lg">{data?.spendings?.clients?.total || 0}</span>
+              </div>
+
+              <div className="grid grid-cols-2 gap-2 mt-2 mb-2">
+                <div className="bg-blue-50 p-2 rounded-lg text-center">
+                  <p className="text-[10px] text-blue-600 font-medium">Standard</p>
+                  <p className="text-base font-bold text-blue-700">
+                    {data?.spendings?.clients?.byType?.['Tarif xarid (standard)']?.count || data?.spendings?.clients?.byType?.['Tarif xarid (standart)']?.count || 0}
+                  </p>
+                </div>
+                <div className="bg-emerald-50 p-2 rounded-lg text-center">
+                  <p className="text-[10px] text-emerald-600 font-medium">Biznes</p>
+                  <p className="text-base font-bold text-emerald-700">
+                    {data?.spendings?.clients?.byType?.['Tarif xarid (biznes)']?.count || 0}
+                  </p>
+                </div>
+              </div>
+
+              <div className="mini-stat">
+                <span className="mini-stat-label">Jami summa</span>
+                <span className="font-semibold text-orange-600 text-sm">{formatShortCurrency(data?.spendings?.clients?.amount)}</span>
+              </div>
+
+              <div className="bg-orange-50 px-2.5 py-1.5 rounded-lg flex justify-between items-center">
+                <span className="text-xs text-orange-700">Bugun</span>
+                <span className="font-semibold text-orange-700">{data?.spendings?.clients?.todayCount || 0} ta</span>
+              </div>
+            </div>
           </div>
-          
-          <div className="space-y-2">
-            <div className="bg-gradient-to-r from-orange-400 to-amber-500 px-3 py-2 rounded-lg text-white flex justify-between items-center">
-              <span className="text-xs">Jami premium</span>
-              <span className="font-bold text-lg">{data?.spendings?.clients?.total || 0}</span>
-            </div>
-            
-            <div className="mini-stat">
-              <span className="mini-stat-label">Jami summa</span>
-              <span className="font-semibold text-orange-600 text-sm">{formatShortCurrency(data?.spendings?.clients?.amount)}</span>
-            </div>
-            
-            <div className="bg-orange-50 px-2.5 py-1.5 rounded-lg flex justify-between items-center">
-              <span className="text-xs text-orange-700">Bugun</span>
-              <span className="font-semibold text-orange-700">{data?.spendings?.clients?.todayCount || 0} ta</span>
-            </div>
-          </div>
-        </div>
 
         {/* User Subscriptions */}
         <div className="card-compact">
