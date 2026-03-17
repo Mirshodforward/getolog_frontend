@@ -153,8 +153,8 @@ function Dashboard() {
         </div>
       )}
 
-      {/* Stats Grid - 5 columns on desktop, 2 on tablet, 1 on mobile */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-2 sm:gap-3">
+      {/* Stats Grid - 4 columns on desktop, 2 on tablet, 1 on mobile */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-2 sm:gap-3">
         {/* Clients */}
         <div className="stat-card hover:shadow-md active:shadow-sm transition-shadow">
           <div className="stat-icon bg-blue-100 text-blue-600 flex-shrink-0">
@@ -174,17 +174,6 @@ function Dashboard() {
           <div className="flex-1 min-w-0">
             <p className="stat-label">Userlar</p>
             <p className="stat-value text-xl sm:text-2xl">{data?.users?.total || 0}</p>
-          </div>
-        </div>
-
-        {/* Today Transactions */}
-        <div className="stat-card hover:shadow-md active:shadow-sm transition-shadow">
-          <div className="stat-icon bg-emerald-100 text-emerald-600 flex-shrink-0">
-            <HiOutlineCreditCard className="w-4 h-4 sm:w-5 sm:h-5" />
-          </div>
-          <div className="flex-1 min-w-0">
-            <p className="stat-label">Bugun to'lov</p>
-            <p className="stat-value text-xl sm:text-2xl">{(data?.clientTransactions?.todayCount || 0) + (data?.userTransactions?.todayCount || 0)}</p>
           </div>
         </div>
 
